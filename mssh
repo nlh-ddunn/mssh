@@ -1,11 +1,9 @@
 #!/usr/bin/python
-
 ####
-#
 #
 # mssh -- magento-cloud ssh helper tool
 #
-# expects a single argument, the project url (including the environment/branch name
+# expects a single argument, the project url (including the environment/branch name)
 # no validation beyond ensuring that the format of the url is correct is done
 #
 # ex:
@@ -19,7 +17,8 @@ import sys
 import re
 
 #error command (just in case)
-errMsg = "head -n 15 " + os.path.realpath(__file__) + "|tail -n 14"
+bannerLen = 11
+errMsg = "head -n " +str(bannerLen+1) +" "+ os.path.realpath(__file__) + "|tail -n "+str(bannerLen)
 
 #is there an argument
 if len(sys.argv) == 1:
@@ -30,10 +29,10 @@ if len(sys.argv) == 1:
 ourUrl = sys.argv[1]
 
 #experimental, convert branch .cloud urls
-
 if re.match("^http(s)://.*\.magentosite.cloud", ourUrl):
     converstep = re.sub("http(s)*://", "", str(ourUrl)).split('.')
-    ourUrl = str('https://' + converstep[1] + '.magento.cloud/projects/' + str(converstep[0]).split("-")[2] + '/environments/' + str(converstep[0]).split("-")[0])
+    projBranch = str(converstep[0]).split("-")
+    ourUrl = str('https://' + converstep[1] + '.magento.cloud/projects/' + projBranch[2] + '/environments/' + projBranch[0])
     print ourUrl
 
 #regex validation
