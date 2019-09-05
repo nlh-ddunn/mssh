@@ -18,18 +18,30 @@ import os
 import sys
 import re
 
+#error command (just in case)
+errMsg = "head -n 15 " + os.path.basename(__file__) + "|tail -n 14"
+
 #is there an argument
 if len(sys.argv) == 1:
-    os.system("head -n 15 " + os.path.basename(__file__) + "|tail -n 14")
+    os.system(errMsg)
     sys.exit("Please provide an argument")
 
+#get our url
+ourUrl = sys.argv[1]
+
+#experimental, convert branch .cloud urls
+
+if re.match("^http(s)://.*\.magentosite.cloud", ourUrl):
+    converstep = re.sub("http(s)*://", "", str(ourUrl)).split('.')
+    ourUrl = str('https://' + converstep[1] + '.magento.cloud/projects/' + str(converstep[0]).split("-")[2] + '/environments/' + str(converstep[0]).split("-")[0])
+
 #regex validation
-if not re.match( "^https://.*\.magento\.cloud\/projects\/[a-z0-9]+\/environments\/.*", sys.argv[1] ):
-    os.system("head -n 15 " + os.path.basename(__file__) + "|tail -n 14")
+if not re.match( "^https://.*\.magento\.cloud\/projects\/[a-z0-9]+\/environments\/.*", ourUrl ):
+    os.system(errMsg)
     sys.exit("Please verify and correct your branch URL")
     
 #store project details in an array for later use
-projDeets = str(sys.argv[1]).split('/')
+projDeets = str(ourUrl.split('/')
 
 #seperate Id and Env (storing as different variables for possible code-reuse)
 projId = projDeets[4]
