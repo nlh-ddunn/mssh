@@ -19,7 +19,7 @@ import sys
 import re
 
 #error command (just in case)
-errMsg = "head -n 15 " + os.path.basename(__file__) + "|tail -n 14"
+errMsg = "head -n 15 " + os.path.realpath(__file__) + "|tail -n 14"
 
 #is there an argument
 if len(sys.argv) == 1:
@@ -37,7 +37,7 @@ if re.match("^http(s)://.*\.magentosite.cloud", ourUrl):
     print ourUrl
 
 #regex validation
-if not re.match( "^https://.*\.magento\.cloud\/projects\/[a-z0-9]+\/environments\/.*", ourUrl ):
+if not re.match( "^http(s)://.*\.magento\.cloud\/projects\/[a-z0-9]+\/environments\/.*", ourUrl ):
     os.system(errMsg)
     sys.exit("Please verify and correct your branch URL")
     
