@@ -28,11 +28,13 @@ if len(sys.argv) == 1:
 #get our url
 ourUrl = sys.argv[1]
 
-#experimental, convert branch .cloud urls
-if re.match("^http(s)://.*\.magentosite.cloud", ourUrl):
-    converstep = re.sub("http(s)*://", "", str(ourUrl)).split('.')
-    projBranch = str(converstep[0]).split("-")
-    ourUrl = str('https://' + converstep[1] + '.magento.cloud/projects/' + projBranch[2] + '/environments/' + projBranch[0])
+#experimental, convert branch .cloud urls (and hopefully catch wildcard subdomains)
+if re.match("^https://.*\.magentosite.cloud", ourUrl):
+    stepOne = re.sub("http(s)*://", "", str(ourUrl).split('.magentosite.cloud')[0])
+    stepTwo = ourUrl.split('.')
+    stepThree = len(stepTwo) - 1
+    stepFour = str(stepTwo[stepThree-3]).split('-')
+    ourUrl = str('https://' + stepTwo[stepThree -2] + '.magento.cloud/projects/' + stepFour[len(stepFour) - 1] + '/environments/' + stepFour[0])
     print ourUrl
 
 #regex validation
