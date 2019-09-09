@@ -26,7 +26,7 @@ if len(sys.argv) == 1:
     sys.exit("Please provide an argument")
 
 #get our url
-ourUrl = sys.argv[1]
+ourUrl = re.sub("\/$","", re.sub('/#/','/',sys.argv[1]))
 
 #experimental, convert branch .cloud urls (and hopefully catch wildcard subdomains)
 if re.match("^https://.*\.magentosite.cloud", ourUrl):
@@ -35,11 +35,11 @@ if re.match("^https://.*\.magentosite.cloud", ourUrl):
     stepThree = len(stepTwo) - 1
     stepFour = str(stepTwo[stepThree-3]).split('-')
     ourUrl = str('https://' + stepTwo[stepThree -2] + '.magento.cloud/projects/' + stepFour[len(stepFour) - 1] + '/environments/' + stepFour[0])
-    print ourUrl
 
 #regex validation
 if not re.match( "^http(s)://.*\.magento\.cloud\/projects\/[a-z0-9]+\/environments\/.*", ourUrl ):
     os.system(errMsg)
+    print ourUrl
     sys.exit("Please verify and correct your branch URL")
     
 #store project details in an array for later use
@@ -48,6 +48,9 @@ projDeets = str(ourUrl).split('/')
 #seperate Id and Env (storing as different variables for possible code-reuse)
 projId = projDeets[4]
 projEnv = projDeets[6]
+
+#print url before running anything
+print ourUrl
 
 #run magento-cloud with the needed arguments to start a ssh session
 os.system("magento-cloud --project=" + projId + " --environment=" + projEnv + " ssh")
