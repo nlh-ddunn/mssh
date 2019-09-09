@@ -36,7 +36,7 @@ if re.match("^https://.*\.magentosite.cloud", ourUrl):
     ourUrl = str('https://' + stepTwo[stepThree -2] + '.magento.cloud/projects/' + stepFour[len(stepFour) - 1] + '/environments/' + stepFour[0])
 
 #regex validation
-if not re.match( "^http(s)://.*\.magento\.cloud\/projects\/[a-z0-9]+\/environments\/.*", ourUrl ):
+if not re.match( "^http(s)://.*\.magento\.cloud\/projects\/[a-z0-9]+", ourUrl ):
     os.system(errMsg)
     print ourUrl
     sys.exit("Please verify and correct your branch URL")
@@ -46,7 +46,11 @@ projDeets = str(ourUrl).split('/')
 
 #seperate Id and Env (storing as different variables for possible code-reuse)
 projId = " --project=" + str(projDeets[4])+" "
-projEnv = " --environment="+str(projDeets[6])+" "
+if re.match("^http(s)://.*\.magento\.cloud\/projects\/[a-z0-9]+\/environments\/.*", ourUrl ):
+    projEnv = " --environment="+str(projDeets[6])+" "
+else:
+    os.system("magento-cloud --project=tx3iahfl3v2uk environment:list|grep -v Inactive")
+    projEnv = ""
 
 #print url before running anything
 print ourUrl
