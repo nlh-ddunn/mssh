@@ -49,7 +49,7 @@ projId = " --project=" + str(projDeets[4])+" "
 if re.match("^http(s)://.*\.magento\.cloud\/projects\/[a-z0-9]+\/environments\/.*", ourUrl ):
     projEnv = " --environment="+str(projDeets[6])+" "
 else:
-    os.system("magento-cloud "+projDeets+" environment:list|grep -v Inactive")
+    os.system("magento-cloud "+projId+" environment:list|grep -v Inactive")
     projEnv = ""
 
 #print url before running anything
