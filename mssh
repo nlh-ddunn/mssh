@@ -17,27 +17,41 @@ import sys
 import re
 
 #error command (just in case)
-bannerLen = 11
-errMsg = "head -n " +str(bannerLen+1) +" "+ os.path.realpath(__file__) + "|tail -n "+str(bannerLen)
+def print_banner():
+    banner = []
+    in_banner = False
+    try:
+        with open(os.path.realpath(__file__), 'r') as f:
+            for line in f:
+                if line.strip() == '####':
+                    if in_banner:
+                        banner.append(line.rstrip())
+                        break
+                    in_banner = True
+                if in_banner:
+                    banner.append(line.rstrip())
+        print('\n'.join(banner))
+    except Exception:
+        # Fallback if file reading fails
+        print("mssh -- magento-cloud ssh helper tool")
 
 #is there an argument
 if len(sys.argv) == 1:
-    os.system(errMsg)
+    print_banner()
     sys.exit("Please provide an argument")
 
 #get our url
 ourUrl = re.sub(r"\/$","", re.sub('/#/','/',sys.argv[1]))
 
 #experimental, convert branch .cloud urls (and hopefully catch wildcard subdomains)
-if re.match(r"^https://.*\.magentosite.cloud", ourUrl):
-    stepTwo = str(re.sub("http(s)*://", "", str(ourUrl).split('.magentosite.cloud')[0])).split('.')
-    stepThree = len(stepTwo) - 1
-    stepFour = str(stepTwo[stepThree-3]).split('-')
-    ourUrl = str('https://' + stepTwo[stepThree -2] + '.magento.cloud/projects/' + stepFour[len(stepFour) - 1] + '/environments/' + stepFour[0])
+match = re.search(r"https://(?:.*?\.?)?([^-]+)(?:-.*)?-([^-]+)\.([^.]+)\.magentosite\.cloud", ourUrl)
+if match:
+    env, proj_id, region = match.groups()
+    ourUrl = f"https://{region}.magento.cloud/projects/{proj_id}/environments/{env}"
 
 #regex validation
 if not re.match( r"^http(s)://.*\.magento\.cloud\/projects\/[a-z0-9]+", ourUrl ):
-    os.system(errMsg)
+    print_banner()
     print(ourUrl)
     sys.exit("Please verify and correct your branch URL")
     
