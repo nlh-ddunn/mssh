@@ -1,15 +1,15 @@
-# mssh
+# mcssh
 ####
 #
 #
-# mssh -- magento-cloud ssh helper tool
+# mcssh -- magento-cloud ssh helper tool
 #
 #
 # expects a single argument, the project url (including the environment/branch name
 # no validation beyond ensuring that the format of the url is correct is done
 #
 # usage:
-# mssh https://REGION.magento.cloud/projects/PROJECTID/environments/BRANCH
+# mcssh https://REGION.magento.cloud/projects/PROJECTID/environments/BRANCH
 #
 ####
 
